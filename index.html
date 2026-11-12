@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Automatic Soil Moisture Sprinkler System</title>
+    <style>
+      :root {
+        --bg: #f4f9f4;
+        --panel: #ffffff;
+        --primary: #1f5f3d;
+        --primary-dark: #163f2d;
+        --accent: #7ecb8d;
+        --text: #1e2a23;
+        --muted: #5c6f66;
+        --border: #dfece2;
+        --shadow: 0 8px 24px rgba(18, 60, 40, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #edf8ee 0%, #f8faf8 100%);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px 70px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        color: #fff;
+        padding: 60px 20px 50px;
+        box-shadow: var(--shadow);
+      }
+
+      .header-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.2;
+      }
+
+      .header p {
+        margin-top: 14px;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .report {
+        margin-top: -25px;
+      }
+
+      .section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px 30px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      h2 {
+        color: var(--primary-dark);
+        font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+        margin-top: 0;
+        margin-bottom: 18px;
+        border-bottom: 3px solid var(--accent);
+        padding-bottom: 8px;
+      }
+
+      h3 {
+        color: var(--primary);
+        margin-top: 18px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin: 0 0 14px;
+        text-align: justify;
+      }
+
+      ul, ol {
+        margin: 0 0 18px 22px;
+        padding: 0;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+
+      .component-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 16px;
+      }
+
+      .component {
+        background: #f7fbf7;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+      }
+
+      .component strong {
+        display: block;
+        color: var(--primary-dark);
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .code-box {
+        background: #f2f7f3;
+        border-left: 5px solid var(--accent);
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin: 10px 0 18px;
+      }
+
+      .sim-figure {
+        margin: 20px 0 8px;
+        padding: 18px;
+        background: #eef3ee;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+      }
+
+      .sim-board {
+        position: relative;
+        width: 100%;
+        height: 440px;
+        background: #d9d9d9;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      .sensor {
+        position: absolute;
+        left: 42px;
+        top: 88px;
+        width: 110px;
+        height: 110px;
+        background: #1d4b75;
+        border-radius: 50%;
+        border: 6px solid #d7d7d7;
+        box-shadow: inset 0 0 0 12px #d7d7d7;
+      }
+
+      .sensor::before {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border-radius: 50%;
+        background: #a0a0a0;
+      }
+
+      .sensor::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #d9d9d9;
+        border-radius: 50%;
+        left: 40px;
+        top: 16px;
+        box-shadow: 0 0 0 6px rgba(0,0,0,0.15);
+      }
+
+      .sensor-label {
+        position: absolute;
+        left: 58px;
+        top: 210px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #222;
+      }
+
+      .arduino {
+        position: absolute;
+        left: 100px;
+        top: 170px;
+        width: 420px;
+        height: 210px;
+        background: #0e4f8c;
+        border-radius: 10px 10px 0 0;
+        border: 4px solid #2a2a2a;
+        box-shadow: inset 0 0 0 3px rgba(255,255,255,0.08);
+      }
+
+      .arduino::before {
+        content: "";
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        top: 22px;
+        bottom: 20px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.06);
+      }
+
+      .arduino-label {
+        position: absolute;
+        left: 255px;
+        top: 300px;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ffffff;
+      }
+
+      .lcd {
+        position: absolute;
+        right: 80px;
+        top: 132px;
+        width: 360px;
+        height: 155px;
+        background: #0a0a0a;
+        border: 3px solid #1c1c1c;
+        border-radius: 6px;
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.08);
+      }
+
+      .lcd-screen {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 12px;
+        bottom: 12px;
+        background: #23a15d;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+        color: #0a1c0f;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 1.5;
+        padding: 14px 18px;
+      }
+
+      .led {
+        position: absolute;
+        left: 420px;
+        top: 70px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #e02a2a;
+        box-shadow: 0 0 12px rgba(255, 34, 34, 0.8);
+      }
+
+      .wire {
+        position: absolute;
+        height: 4px;
+        background: #f44336;
+        border-radius: 999px;
+      }
+
+      .wire.green {
+        background: #37c64f;
+      }
+
+      .wire.one {
+        left: 150px;
+        top: 150px;
+        width: 145px;
+      }
+
+      .wire.two {
+        left: 510px;
+        top: 95px;
+        width: 92px;
+        transform: rotate(26deg);
+        transform-origin: left center;
+      }
+
+      .wire.three {
+        left: 420px;
+        top: 160px;
+        width: 120px;
+      }
+
+      .caption {
+        text-align: center;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 640px) {
+        .section {
+          padding: 22px 18px;
+        }
+
+        .container {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <h1>Automatic Soil Moisture Sprinkler System</h1>
+        <p>Smart irrigation project report using Arduino and soil moisture sensing</p>
+      </div>
+    </header>
+
+    <main class="container report">
+      <section class="section">
+        <h2>1. Introduction</h2>
+        <p>
+          The Automatic Soil Moisture Sprinkler System is an Arduino-based project designed to monitor soil moisture levels and automatically control a watering system. The main purpose of this project is to reduce manual watering, save water, and provide plants with the appropriate amount of moisture.
+        </p>
+        <p>
+          The system uses soil moisture sensors to measure the moisture content of the soil. An Arduino Uno processes the sensor readings and determines whether watering is required. An LCD display shows the sensor values and their ON/OFF status.
+        </p>
+        <p>
+          The project is developed and tested using the Wokwi online simulation platform.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>2. Objectives</h2>
+        <ul>
+          <li>To develop an automatic plant watering system.</li>
+          <li>To monitor soil moisture levels using sensors.</li>
+          <li>To control watering based on a predefined moisture threshold.</li>
+          <li>To display sensor readings on an LCD screen.</li>
+          <li>To reduce water waste and human effort.</li>
+          <li>To demonstrate the practical application of Arduino in smart agriculture.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>3. Components Used</h2>
+        <div class="component-grid">
+          <div class="component">
+            <strong>Arduino Uno</strong>
+            The main controller responsible for processing sensor data and controlling the system.
+          </div>
+          <div class="component">
+            <strong>Soil Moisture Sensors</strong>
+            Used to measure the moisture level of the soil.
+          </div>
+          <div class="component">
+            <strong>16×2 LCD Display with I2C Module</strong>
+            Displays moisture readings and system status.
+          </div>
+          <div class="component">
+            <strong>LED</strong>
+            Indicates the output status of the system.
+          </div>
+          <div class="component">
+            <strong>Resistor</strong>
+            Used to limit current through the LED.
+          </div>
+          <div class="component">
+            <strong>Connecting Wires</strong>
+            Used to establish electrical connections.
+          </div>
+          <div class="component">
+            <strong>Wokwi Simulator</strong>
+            Used to design, build, and test the electronic circuit virtually.
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>4. Working Principle</h2>
+        <p>
+          The system operates using four analog sensor inputs connected to Arduino pins A0, A1, A2, and A3.
+        </p>
+        <p>
+          First, the moisture sensors measure the moisture levels in the soil and send analog signals to the Arduino.
+        </p>
+        <p>
+          The Arduino compares each sensor reading with a predefined threshold value of <span class="highlight">500</span>.
+        </p>
+        <ul>
+          <li>If the sensor reading is below 500, the system identifies the condition as requiring watering and activates the corresponding digital output.</li>
+          <li>If the sensor reading is equal to or above 500, the corresponding output remains OFF.</li>
+        </ul>
+        <p>
+          The system displays the sensor readings and their ON/OFF conditions on the LCD screen.
+        </p>
+        <p>
+          This process is repeated continuously, allowing the system to monitor soil moisture in real time.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>5. Circuit Description</h2>
+        <p>
+          The circuit is designed using an Arduino Uno as its central processing unit.
+        </p>
+        <p>
+          The four moisture sensor signals are connected to analog input pins A0, A1, A2, and A3. Four digital output pins (8, 9, 10, and 11) are configured to control the corresponding outputs.
+        </p>
+        <p>
+          An I2C LCD module is connected to the Arduino to display the sensor readings. The LCD uses the I2C address 0x27 and has 16 columns and 2 rows.
+        </p>
+        <p>
+          An LED with a current-limiting resistor is also included in the circuit to provide a visual indication.
+        </p>
+        <p>
+          All components are connected according to the circuit diagram in the Wokwi simulation.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>6. Software Implementation</h2>
+        <p>
+          The project is programmed using Arduino C/C++.
+        </p>
+        <p>
+          The program uses the following libraries:
+        </p>
+        <ul>
+          <li>Wire.h</li>
+          <li>LiquidCrystal_I2C.h</li>
+        </ul>
+        <p>
+          The LCD is initialized using the I2C address 0x27.
+        </p>
+        <p>
+          The four sensor values are read using the <span class="highlight">analogRead()</span> function. The <span class="highlight">digitalWrite()</span> function controls the output pins according to the threshold condition.
+        </p>
+        <div class="code-box">
+          <strong>Threshold:</strong> threshold = 500
+        </div>
+        <ol>
+          <li>Reads the four analog sensor values.</li>
+          <li>Compares each value with the threshold.</li>
+          <li>Activates or deactivates the corresponding digital outputs.</li>
+          <li>Displays sensor readings on the LCD.</li>
+          <li>Repeats the process continuously.</li>
+        </ol>
+      </section>
+
+      <section class="section">
+        <h2>7. Simulation and Results</h2>
+        <p>
+          The project was successfully designed and tested using the Wokwi simulation platform.
+        </p>
+        <p>
+          During the simulation, the LCD displayed the sensor readings and their operating conditions.
+        </p>
+        <p>
+          The displayed results included:
+        </p>
+        <ul>
+          <li>Sensor 1: 38 (ON)</li>
+          <li>Sensor 2: 340 (ON)</li>
+        </ul>
+        <p>
+          These readings demonstrate that the system can identify sensor values below the predefined threshold and indicate the need for watering.
+        </p>
+        <p>
+          The Arduino successfully reads the analog inputs, processes the values, and controls the digital outputs according to the programmed conditions.
+        </p>
+        <p>
+          The simulation demonstrates the basic operation of an automatic soil moisture monitoring and watering control system.
+        </p>
+
+        <div class="sim-figure" aria-label="Circuit simulation example showing the automatic soil moisture sprinkler system working">
+          <div class="sim-board">
+            <div class="sensor"></div>
+            <div class="sensor-label">S1</div>
+            <div class="wire one"></div>
+            <div class="wire two green"></div>
+            <div class="wire three"></div>
+            <div class="led"></div>
+            <div class="arduino"></div>
+            <div class="arduino-label">UNO</div>
+            <div class="lcd"><div class="lcd-screen">S1:542 OFF<br />S2:381 ON</div></div>
+          </div>
+          <div class="caption">Figure: Example of the working soil moisture monitoring system in simulation.</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>8. Advantages</h2>
+        <ul>
+          <li>Reduces manual watering.</li>
+          <li>Helps conserve water.</li>
+          <li>Provides continuous soil moisture monitoring.</li>
+          <li>Easy to operate and understand.</li>
+          <li>Low-cost and Arduino-based design.</li>
+          <li>Can be expanded for larger agricultural applications.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>9. Applications</h2>
+        <ul>
+          <li>Home gardens.</li>
+          <li>Greenhouses.</li>
+          <li>Agricultural fields.</li>
+          <li>Indoor plant watering systems.</li>
+          <li>Smart irrigation systems.</li>
+          <li>Small-scale farming.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>10. Future Improvements</h2>
+        <ul>
+          <li>A water pump or solenoid valve for actual automatic irrigation.</li>
+          <li>A relay module to control the pump.</li>
+          <li>A water tank level sensor.</li>
+          <li>Wi-Fi connectivity for remote monitoring.</li>
+          <li>A mobile application to monitor soil moisture.</li>
+          <li>Additional sensors for temperature and humidity measurement.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>11. Conclusion</h2>
+        <p>
+          The Automatic Soil Moisture Sprinkler System demonstrates how Arduino technology can be used to develop an intelligent and efficient irrigation system.
+        </p>
+        <p>
+          The project successfully monitors four analog sensor inputs, compares their readings with a predefined threshold, controls digital outputs, and displays the results on an LCD screen.
+        </p>
+        <p>
+          The Wokwi simulation confirms the basic working principle of the system. This project provides a useful foundation for developing more advanced smart irrigation systems that can save water, reduce human effort, and improve plant care.
+        </p>
+        <p>
+          In conclusion, the project demonstrates the practical application of embedded systems and automation in modern agriculture.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
